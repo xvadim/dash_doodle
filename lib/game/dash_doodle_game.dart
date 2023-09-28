@@ -8,7 +8,7 @@ import 'world.dart';
 
 class DashDoodleGame extends FlameGame {
   GameManager gameManager = GameManager();
-  ObjectManager objectManager = ObjectManager();
+  late ObjectManager objectManager; // = ObjectManager();
   final _world = World();
 
   @override
@@ -34,7 +34,14 @@ class DashDoodleGame extends FlameGame {
 
   void startGame() {
     print('START GAME!!');
+    _prepareGame();
     gameManager.state = GameState.playing;
     overlays.remove(keyMenuOverlay);
+  }
+
+  void _prepareGame() {
+    objectManager = ObjectManager();
+
+    add(objectManager);
   }
 }

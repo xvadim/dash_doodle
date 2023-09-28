@@ -4,6 +4,9 @@ import 'package:flame/components.dart';
 
 import '../dash_doodle_game.dart';
 
+const platformWidth = 115.0;
+const tallestPlatformHeight = 100.0;
+
 /// The supertype for all Platforms, including Enemies
 ///
 /// [T] should be an enum that is used to Switch between sprites, if necessary
@@ -13,12 +16,7 @@ abstract class Platform<T> extends SpriteGroupComponent<T>
     with HasGameRef<DashDoodleGame> {
   Platform({
     super.position,
-  }) : super(size: Vector2.all(100), priority: 2);
-
-  @override
-  Future<void>? onLoad() async {
-    await super.onLoad();
-  }
+  }) : super(size: Vector2.all(platformWidth), priority: 2);
 }
 
 enum NormalPlatformState { only }
@@ -38,9 +36,8 @@ class NormalPlatform extends Platform<NormalPlatformState> {
     var randSpriteIndex = Random().nextInt(spriteOptions.length);
 
     String randSprite = spriteOptions.keys.elementAt(randSpriteIndex);
-    print('Sprite index $randSpriteIndex Sprite name: $randSprite');
     sprites = {
-      NormalPlatformState.only: await gameRef.loadSprite('game/$randSprite.png')
+      NormalPlatformState.only: await gameRef.loadSprite('$randSprite.png')
     };
 
     current = NormalPlatformState.only;
