@@ -27,7 +27,7 @@ class ObjectManager extends Component with HasGameRef<DashDoodleGame> {
 
     for (int i = 0; i < 9; i++) {
       if (i != 0) {
-        currentX = _generateNextX(tallestPlatformHeight);
+        currentX = _generateNextX(platformWidth);
         currentY = _generateNextY();
       }
       _platforms.add(_randomPlatform(Vector2(currentX, currentY)));

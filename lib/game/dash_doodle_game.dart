@@ -14,7 +14,6 @@ class DashDoodleGame extends FlameGame {
   @override
   Future<void>? onLoad() async {
     super.onLoad();
-    print('ON LOAD');
     await add(_world);
     await add(FpsTextComponent());
 
@@ -29,6 +28,7 @@ class DashDoodleGame extends FlameGame {
       overlays.add(keyMenuOverlay);
       return;
     }
+    //...
     // print('UPDATE SCENE $dt - ${DateTime.now()}');
   }
 
