@@ -1,15 +1,19 @@
 import 'package:flame/components.dart' hide World;
 import 'package:flame/game.dart';
+import 'package:flame/input.dart';
 
 import 'manager/game_manager.dart';
 import 'manager/object_manager.dart';
+import 'sprites/player.dart';
 import 'widgets/game_home_widget.dart';
 import 'world.dart';
 
-class DashDoodleGame extends FlameGame {
-  GameManager gameManager = GameManager();
-  late ObjectManager objectManager; // = ObjectManager();
+class DashDoodleGame extends FlameGame with HasKeyboardHandlerComponents {
+  final GameManager gameManager = GameManager();
   final _world = World();
+
+  late ObjectManager objectManager;
+  late Player player;
 
   @override
   Future<void>? onLoad() async {
@@ -28,20 +32,22 @@ class DashDoodleGame extends FlameGame {
       overlays.add(keyMenuOverlay);
       return;
     }
-    //...
-    // print('UPDATE SCENE $dt - ${DateTime.now()}');
   }
 
   void startGame() {
-    print('START GAME!!');
     _prepareGame();
+
     gameManager.state = GameState.playing;
     overlays.remove(keyMenuOverlay);
   }
 
   void _prepareGame() {
-    objectManager = ObjectManager();
+    player = Player();
+    add(player);
+    player.reset();
+    player.resetPosition();
 
+    objectManager = ObjectManager();
     add(objectManager);
   }
 }
