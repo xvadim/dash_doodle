@@ -59,7 +59,6 @@ class Player extends SpriteGroupComponent<PlayerState>
 
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
-    print('KEYS: $keysPressed');
     if (keysPressed.contains(LogicalKeyboardKey.arrowLeft)) {
       _moveLeft();
     }
@@ -73,7 +72,7 @@ class Player extends SpriteGroupComponent<PlayerState>
 
   void reset() {
     _velocity = Vector2.zero();
-    current = PlayerState.left;
+    current = PlayerState.center;
   }
 
   void resetPosition() {
