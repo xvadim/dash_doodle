@@ -5,6 +5,7 @@ import 'package:flame/components.dart';
 import '../dash_doodle_game.dart';
 import '../sprites/platform.dart';
 import '../utils/num_utils.dart';
+import 'level_manager.dart';
 
 class ObjectManager extends Component with HasGameRef<DashDoodleGame> {
   ObjectManager({
@@ -38,8 +39,32 @@ class ObjectManager extends Component with HasGameRef<DashDoodleGame> {
 
   @override
   void update(double dt) {
+    final topOfLowestPlatform =
+        _platforms.first.position.y + tallestPlatformHeight;
+
+    final screenBottom = gameRef.player.position.y +
+        (gameRef.size.y / 2) +
+        gameRef.screenBufferSpace;
+
+    if (topOfLowestPlatform > screenBottom) {
+      var newPlatY = _generateNextY();
+      var newPlatX = _generateNextX(platformWidth);
+      final nextPlat = _randomPlatform(Vector2(newPlatX, newPlatY));
+      add(nextPlat);
+
+      _platforms.add(nextPlat);
+
+      gameRef.gameManager.increaseScore();
+
+      _cleanupLastPlatform();
+    }
+
     super.update(dt);
-    //TODO: add new platforms when needed
+  }
+
+  void configure(int nextLevel, Difficulty config) {
+    minVerticalDistanceToNextPlatform = gameRef.levelManager.minDistance;
+    maxVerticalDistanceToNextPlatform = gameRef.levelManager.maxDistance;
   }
 
   double _generateNextX(double platformWidth) {
@@ -69,6 +94,12 @@ class ObjectManager extends Component with HasGameRef<DashDoodleGame> {
                 minVerticalDistanceToNextPlatform);
 
     return currentHighestPlatformY - distanceToNextY;
+  }
+
+  void _cleanupLastPlatform() {
+    final lowestPlat = _platforms.removeAt(0);
+
+    lowestPlat.removeFromParent();
   }
 
   Platform _randomPlatform(Vector2 position) {

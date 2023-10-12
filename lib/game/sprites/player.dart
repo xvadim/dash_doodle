@@ -1,8 +1,10 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
 import 'package:flutter/services.dart';
 
 import '../dash_doodle_game.dart';
+import 'platform.dart';
 
 enum PlayerState {
   left,
@@ -11,10 +13,10 @@ enum PlayerState {
 }
 
 class Player extends SpriteGroupComponent<PlayerState>
-    with HasGameRef<DashDoodleGame>, KeyboardHandler {
+    with HasGameRef<DashDoodleGame>, KeyboardHandler, CollisionCallbacks {
   Player({
     super.position,
-    this.jumpSpeed = 200,
+    this.jumpVerticalSpeed = 400,
   }) : super(
           size: Vector2(79, 109),
           anchor: Anchor.center,
@@ -23,17 +25,23 @@ class Player extends SpriteGroupComponent<PlayerState>
     _dashHorizontalCenter = size.x / 2;
   }
 
-  double jumpSpeed;
+  double jumpVerticalSpeed;
+  double jumpHorizontalSpeed = 200;
 
   int _hAxisInput = 0;
   final int movingLeftInput = -1;
   final int movingRightInput = 1;
   Vector2 _velocity = Vector2.zero();
   late final double _dashHorizontalCenter;
+  final double _gravity = 9;
+
+  bool get isMovingDown => _velocity.y > 0;
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+
+    await add(CircleHitbox());
 
     await _loadCharacterSprites();
     current = PlayerState.center;
@@ -43,7 +51,7 @@ class Player extends SpriteGroupComponent<PlayerState>
   void update(double dt) {
     if (gameRef.gameManager.isMenu || gameRef.gameManager.isGameOver) return;
 
-    _velocity.x = _hAxisInput * jumpSpeed;
+    _velocity.x = _hAxisInput * jumpHorizontalSpeed;
 
     if (position.x < _dashHorizontalCenter) {
       position.x = gameRef.size.x - _dashHorizontalCenter;
@@ -51,6 +59,8 @@ class Player extends SpriteGroupComponent<PlayerState>
     if (position.x > gameRef.size.x - _dashHorizontalCenter) {
       position.x = _dashHorizontalCenter;
     }
+
+    _velocity.y += _gravity;
 
     position += _velocity * dt;
 
@@ -67,7 +77,34 @@ class Player extends SpriteGroupComponent<PlayerState>
       _moveRight();
     }
 
+    // if (keysPressed.contains(LogicalKeyboardKey.arrowUp)) {
+    //   jump();
+    // }
+
     return true;
+  }
+
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
+    super.onCollision(intersectionPoints, other);
+    bool isCollidingVertically =
+        (intersectionPoints.first.y - intersectionPoints.last.y).abs() < 5;
+
+    if (isMovingDown && isCollidingVertically) {
+      current = PlayerState.center;
+      if (other is NormalPlatform) {
+        jump();
+        return;
+      }
+    }
+  }
+
+  void setJumpSpeed(double newJumpSpeed) {
+    jumpVerticalSpeed = newJumpSpeed;
+  }
+
+  void jump() {
+    _velocity.y = -jumpVerticalSpeed;
   }
 
   void reset() {

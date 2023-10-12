@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
 import '../dash_doodle_game.dart';
@@ -13,10 +14,18 @@ const tallestPlatformHeight = 100.0;
 /// Many platforms only need one Sprite, so [T] will be an enum that looks
 /// something like: `enum { only }`
 abstract class Platform<T> extends SpriteGroupComponent<T>
-    with HasGameRef<DashDoodleGame> {
+    with HasGameRef<DashDoodleGame>, CollisionCallbacks {
   Platform({
     super.position,
   }) : super(size: Vector2.all(platformWidth), priority: 2);
+
+  final hitbox = RectangleHitbox();
+
+  @override
+  Future<void>? onLoad() async {
+    await super.onLoad();
+    await add(hitbox);
+  }
 }
 
 enum NormalPlatformState { only }
