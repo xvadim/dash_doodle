@@ -26,9 +26,9 @@ class LevelManager extends Component with HasGameRef<DashDoodleGame> {
     1: const Difficulty(
         minDistance: 200, maxDistance: 300, jumpSpeed: 400, score: 0),
     2: const Difficulty(
-        minDistance: 200, maxDistance: 400, jumpSpeed: 500, score: 20),
+        minDistance: 200, maxDistance: 400, jumpSpeed: 500, score: 2),
     3: const Difficulty(
-        minDistance: 200, maxDistance: 500, jumpSpeed: 600, score: 40),
+        minDistance: 200, maxDistance: 500, jumpSpeed: 600, score: 4),
     4: const Difficulty(
         minDistance: 200, maxDistance: 600, jumpSpeed: 750, score: 80),
     5: const Difficulty(

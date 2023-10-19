@@ -4,7 +4,9 @@ import 'package:flame/components.dart';
 import 'package:flutter/services.dart';
 
 import '../dash_doodle_game.dart';
+import 'broken_platfrom.dart';
 import 'platform.dart';
+import 'spring_board.dart';
 
 enum PlayerState {
   left,
@@ -92,9 +94,17 @@ class Player extends SpriteGroupComponent<PlayerState>
 
     if (isMovingDown && isCollidingVertically) {
       current = PlayerState.center;
-      if (other is NormalPlatform) {
-        jump();
-        return;
+      switch (other) {
+        case NormalPlatform():
+          jump();
+          return;
+        case SpringBoard():
+          jump(specialJumpSpeed: jumpVerticalSpeed * 2);
+          return;
+        case BrokenPlatform() when other.current == BrokenPlatformState.cracked:
+          jump();
+          other.breakPlatform();
+          return;
       }
     }
   }
@@ -103,8 +113,9 @@ class Player extends SpriteGroupComponent<PlayerState>
     jumpVerticalSpeed = newJumpSpeed;
   }
 
-  void jump() {
-    _velocity.y = -jumpVerticalSpeed;
+  void jump({double? specialJumpSpeed}) {
+    _velocity.y =
+        specialJumpSpeed != null ? -specialJumpSpeed : -jumpVerticalSpeed;
   }
 
   void reset() {

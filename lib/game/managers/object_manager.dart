@@ -3,9 +3,14 @@ import 'dart:math';
 import 'package:flame/components.dart';
 
 import '../dash_doodle_game.dart';
+import '../sprites/broken_platfrom.dart';
 import '../sprites/platform.dart';
+import '../sprites/spring_board.dart';
 import '../utils/num_utils.dart';
+import '../utils/probability_generator.dart';
 import 'level_manager.dart';
+
+enum PlatformType { spring, broken }
 
 class ObjectManager extends Component with HasGameRef<DashDoodleGame> {
   ObjectManager({
@@ -17,6 +22,7 @@ class ObjectManager extends Component with HasGameRef<DashDoodleGame> {
   double maxVerticalDistanceToNextPlatform;
 
   final List<Platform> _platforms = [];
+  final _probGen = ProbabilityGenerator();
   final Random _rand = Random();
 
   @override
@@ -65,6 +71,32 @@ class ObjectManager extends Component with HasGameRef<DashDoodleGame> {
   void configure(int nextLevel, Difficulty config) {
     minVerticalDistanceToNextPlatform = gameRef.levelManager.minDistance;
     maxVerticalDistanceToNextPlatform = gameRef.levelManager.maxDistance;
+
+    _enableLevelSpecialty(nextLevel);
+  }
+
+  final _specialPlatforms = {
+    PlatformType.spring: true,
+    PlatformType.broken: false,
+  };
+
+  void _resetSpecialties() {
+    for (final key in _specialPlatforms.keys) {
+      _specialPlatforms[key] = false;
+    }
+  }
+
+  void _enableSpecialty(PlatformType platformType) {
+    _specialPlatforms[platformType] = true;
+  }
+
+  void _enableLevelSpecialty(int level) {
+    switch (level) {
+      case 1:
+        _enableSpecialty(PlatformType.spring);
+      case 2:
+        _enableSpecialty(PlatformType.broken);
+    }
   }
 
   double _generateNextX(double platformWidth) {
@@ -103,6 +135,16 @@ class ObjectManager extends Component with HasGameRef<DashDoodleGame> {
   }
 
   Platform _randomPlatform(Vector2 position) {
+    if ((_specialPlatforms[PlatformType.spring] ?? false) &&
+        _probGen.generateWithProbability(15)) {
+      return SpringBoard(position: position);
+    }
+
+    if ((_specialPlatforms[PlatformType.broken] ?? false) &&
+        _probGen.generateWithProbability(20)) {
+      return BrokenPlatform(position: position);
+    }
+
     return NormalPlatform(position: position);
   }
 }

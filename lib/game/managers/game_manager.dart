@@ -20,6 +20,5 @@ class GameManager extends Component with HasGameRef<DashDoodleGame> {
 
   void increaseScore() {
     score++;
-    print('INC SCORE $score');
   }
 }

@@ -4,6 +4,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
 import '../dash_doodle_game.dart';
+import '../utils/probability_generator.dart';
 
 const platformWidth = 115.0;
 const tallestPlatformHeight = 100.0;
@@ -19,12 +20,39 @@ abstract class Platform<T> extends SpriteGroupComponent<T>
     super.position,
   }) : super(size: Vector2.all(platformWidth), priority: 2);
 
-  final hitbox = RectangleHitbox();
+  bool _isMoving = false;
+  double _direction = 1;
+  final Vector2 _velocity = Vector2.zero();
+  final double _speed = 35;
 
   @override
   Future<void>? onLoad() async {
     await super.onLoad();
-    await add(hitbox);
+    await add(RectangleHitbox());
+
+    _isMoving = ProbabilityGenerator().generateWithProbability(20);
+  }
+
+  @override
+  void update(double dt) {
+    _move(dt);
+    super.update(dt);
+  }
+
+  void _move(double dt) {
+    if (!_isMoving) return;
+
+    final double gameWidth = gameRef.size.x;
+
+    if (position.x <= 0) {
+      _direction = 1;
+    } else if (position.x >= gameWidth - size.x) {
+      _direction = -1;
+    }
+
+    _velocity.x = _direction * _speed;
+
+    position += _velocity * dt;
   }
 }
 
