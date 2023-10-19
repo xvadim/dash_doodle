@@ -2,9 +2,11 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
 import '../dash_doodle_game.dart';
+import 'game_over_overlay.dart';
 import 'main_menu_overlay.dart';
 
 const keyMenuOverlay = 'mainMenuOverlay';
+const keyGameOverOverlay = 'gameOverOverlay';
 
 class GameHomeWidget extends StatelessWidget {
   const GameHomeWidget({super.key, required this.game});
@@ -25,6 +27,7 @@ class GameHomeWidget extends StatelessWidget {
             overlayBuilderMap: <String,
                 Widget Function(BuildContext, DashDoodleGame)>{
               keyMenuOverlay: (context, game) => MainMenuOverlay(game),
+              keyGameOverOverlay: (context, game) => GameOverOverlay(game),
             },
           ),
         ),

@@ -37,6 +37,10 @@ class DashDoodleGame extends FlameGame
   void update(double dt) {
     super.update(dt);
 
+    if (gameManager.isGameOver) {
+      return;
+    }
+
     if (gameManager.isMenu) {
       overlays.add(keyMenuOverlay);
       return;
@@ -57,9 +61,17 @@ class DashDoodleGame extends FlameGame
         camera.worldBounds = worldBounds;
       }
 
-      var isInTopHalfOfScreen = player.position.y <= (_world.size.y / 2);
+      final isInTopHalfOfScreen = player.position.y <= (_world.size.y / 2);
       if (!player.isMovingDown && isInTopHalfOfScreen) {
         camera.followComponent(player);
+      }
+
+      if (player.position.y >
+          camera.position.y +
+              _world.size.y +
+              player.size.y +
+              screenBufferSpace) {
+        onLose();
       }
     }
   }
@@ -69,6 +81,12 @@ class DashDoodleGame extends FlameGame
 
     gameManager.state = GameState.playing;
     overlays.remove(keyMenuOverlay);
+  }
+
+  void onLose() {
+    gameManager.state = GameState.gameOver;
+    player.removeFromParent();
+    overlays.add(keyGameOverOverlay);
   }
 
   void _prepareGame() {
