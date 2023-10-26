@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../dash_doodle_game.dart';
+import 'score_indicator.dart';
 
 class GameOverOverlay extends StatelessWidget {
   const GameOverOverlay(this.game, {super.key});
@@ -19,7 +20,8 @@ class GameOverOverlay extends StatelessWidget {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 50),
-            Text('Score: ${game.gameManager.score}'),
+            ScoreIndicator(game),
+            // Text('Score: ${game.gameManager.score}'),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flame/components.dart';
+import 'package:flutter/foundation.dart';
 
 import '../dash_doodle_game.dart';
 
@@ -11,14 +12,14 @@ class GameManager extends Component with HasGameRef<DashDoodleGame> {
 
   GameState state = GameState.menu;
 
-  int score = 0;
+  ValueNotifier<int> score = ValueNotifier(0);
 
   void reset() {
-    score = 0;
+    score.value = 0;
     state = GameState.menu;
   }
 
   void increaseScore() {
-    score++;
+    score.value++;
   }
 }

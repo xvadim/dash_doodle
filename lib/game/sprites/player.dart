@@ -72,11 +72,11 @@ class Player extends SpriteGroupComponent<PlayerState>
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     if (keysPressed.contains(LogicalKeyboardKey.arrowLeft)) {
-      _moveLeft();
+      moveLeft();
     }
 
     if (keysPressed.contains(LogicalKeyboardKey.arrowRight)) {
-      _moveRight();
+      moveRight();
     }
 
     // if (keysPressed.contains(LogicalKeyboardKey.arrowUp)) {
@@ -146,12 +146,12 @@ class Player extends SpriteGroupComponent<PlayerState>
     };
   }
 
-  void _moveLeft() {
+  void moveLeft() {
     current = PlayerState.left;
     _hAxisInput = movingLeftInput;
   }
 
-  void _moveRight() {
+  void moveRight() {
     current = PlayerState.right;
     _hAxisInput = movingRightInput;
   }

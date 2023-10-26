@@ -26,9 +26,10 @@ class DashDoodleGame extends FlameGame
   Future<void>? onLoad() async {
     super.onLoad();
     await add(_world);
-    await add(FpsTextComponent());
 
     await add(gameManager);
+
+    overlays.add(keyGameOverlay);
 
     await add(levelManager);
   }
@@ -89,6 +90,14 @@ class DashDoodleGame extends FlameGame
     overlays.add(keyGameOverOverlay);
   }
 
+  void togglePauseState() {
+    if (paused) {
+      resumeEngine();
+    } else {
+      pauseEngine();
+    }
+  }
+
   void _prepareGame() {
     gameManager.reset();
 
@@ -115,7 +124,7 @@ class DashDoodleGame extends FlameGame
   }
 
   void _checkLevelUp() {
-    if (levelManager.shouldLevelUp(gameManager.score)) {
+    if (levelManager.shouldLevelUp(gameManager.score.value)) {
       levelManager.increaseLevel();
 
       objectManager.configure(levelManager.level, levelManager.difficulty);
